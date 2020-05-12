@@ -1,0 +1,1 @@
+ALTER TABLE students ADD COLUMN quote VARCHAR(255);
