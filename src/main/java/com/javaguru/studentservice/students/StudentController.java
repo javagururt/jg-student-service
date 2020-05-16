@@ -1,6 +1,8 @@
 package com.javaguru.studentservice.students;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,6 +29,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/students")
 class StudentController {
 
+    private static final Logger log = LoggerFactory.getLogger(StudentController.class);
     private final StudentService studentService;
 
     StudentController(StudentService studentService) {
@@ -35,22 +38,25 @@ class StudentController {
 
     @GetMapping("/{id}")
     StudentDto findById(@PathVariable Long id) {
+        log.info("Received request - find by id: {}", id);
         return studentService.findById(id);
     }
 
     @GetMapping
     List<StudentDto> findAll() {
+        log.info("Received request - find all");
         return studentService.findAll();
     }
 
     @GetMapping(params = "name")
     List<StudentDto> findByName(@RequestParam(name = "name") String name) {
-        System.out.println("Received request - find by name: " + name);
+        log.info("Received request - find by name: {}", name);
         return studentService.findByName(name);
     }
 
     @PostMapping
     ResponseEntity<Void> create(@Valid @RequestBody StudentDto dto) {
+        log.info("Received request - create student: {}", dto);
         StudentDto createdStudent = studentService.save(dto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -76,7 +82,7 @@ class StudentController {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler
     void handleNotFoundException(StudentNotFoundException e) {
-        System.out.println(e.getMessage());
+        log.error(e.getMessage());
     }
 
 }
